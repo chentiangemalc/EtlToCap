@@ -1,0 +1,6 @@
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\obj\Debug\EtlToCap.csproj.CoreCompileInputs.cache
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\obj\Debug\EtlToCap.exe
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\obj\Debug\EtlToCap.pdb
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\bin\Debug\EtlToCap.exe.config
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\bin\Debug\EtlToCap.exe
+C:\Users\k10496\source\repos\EtlToCap\EtlToCap\bin\Debug\EtlToCap.pdb
