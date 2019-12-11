@@ -15,18 +15,25 @@ namespace EtlToCap
         {
             if (args.Length ==0)
             {
-                Console.WriteLine("Usage: EtlCap <source ETL file> <destination pcap file>");
+                Console.WriteLine("Usage: EtlCap <source ETL file> <destination pcap file> [<Are packets 802.11? y / (n)>]");
                 return;
             }
             Console.WriteLine($"Converting File {args[0]} to {args[1]}");
-            long result = ConvertEtlToPcap(args[0], args[1], 65536);
+            UInt32 networkType = 1; // LINKTYPE_ETHERNET
+            if (args.Length > 2 && args[2].IndexOf("n", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                Console.WriteLine($"Using network type == 802.11");
+                networkType = 105; // LINKTYPE_IEEE802_11
+            }
+            long result = ConvertEtlToPcap(args[0], args[1], 65536, networkType);
             Console.WriteLine($"{result} packets converted.");
         }
 
-        public static long ConvertEtlToPcap(string source, string destination, UInt32 maxPacketSize)
+        public static long ConvertEtlToPcap(string source, string destination, UInt32 maxPacketSize, UInt32 networkType = 1)
         {
             int result = 0;
             var networkTrace = new Guid("{00000001-0000-0000-0000-000000000000}");
+            var ndisProviderId = new Guid("{2ed6006e-4729-4609-b423-3ee7bcd678ef}");
             using (BinaryWriter writer = new BinaryWriter(File.Open(destination, FileMode.Create)))
             {
 
@@ -36,7 +43,7 @@ namespace EtlToCap
                 Int32 thiszone = 0;
                 UInt32 sigfigs = 0;
                 UInt32 snaplen = maxPacketSize;
-                UInt32 network = 1; // LINKTYPE_ETHERNET
+                UInt32 network = networkType;
 
                 writer.Write(magic_number);
                 writer.Write(version_major);
@@ -53,7 +60,8 @@ namespace EtlToCap
                     {
                         using (record)
                         {
-                            if (record.ActivityId == networkTrace)
+                            if (record.ActivityId == networkTrace ||
+                                record.ProviderId == ndisProviderId)
                             {
                                 result++;
                                 DateTime timeCreated = (DateTime)record.TimeCreated;
